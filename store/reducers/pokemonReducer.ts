@@ -30,4 +30,10 @@ export const pokemonReducers = {
     state.offset = 0;
     state.hasMore = true;
   },
+  setSelectedPokemon(state: PokemonState, action: PayloadAction<any>) {
+    state.selectedPokemon = action.payload;
+  },
+  clearSelectedPokemon(state: PokemonState) {
+    state.selectedPokemon = null;
+  },
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { COLORS } from "../constants/colors";
 import SearchInput from "../components/Inputs/SearchInput";
@@ -7,15 +7,18 @@ import CardList from "../components/Card/CardList";
 import { useGetPokemonListQuery } from "../store/pokemonApi";
 import { PAGE_SIZE } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { appendFromApi, replaceFromApi, setOffset, selectPokemonItems, selectPokemonOffset, selectPokemonHasMore } from "../store/slices/pokemonSlice";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types/navigation";
-import { useNavigation } from "@react-navigation/native";
+import {
+  appendFromApi,
+  replaceFromApi,
+  setOffset,
+  selectPokemonItems,
+  selectPokemonOffset,
+  selectPokemonHasMore
+} from "../store/slices/pokemonSlice";
 import { AppDispatch } from "../store/store";
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const offset = useSelector(selectPokemonOffset);
   const hasMore = useSelector(selectPokemonHasMore);
   const pokemonList = useSelector(selectPokemonItems);
@@ -37,10 +40,6 @@ const HomeScreen = () => {
       dispatch(setOffset(offset + PAGE_SIZE));
     }
   }, [dispatch, isFetching, hasMore, offset]);
-
-  const handlePressItem = useCallback((pokemonId: number) => {
-    navigation.navigate('Details', { pokemonId });
-  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.mainContainer}>

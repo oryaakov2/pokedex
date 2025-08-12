@@ -14,9 +14,17 @@ export interface PokemonApiListResponseLike {
   next: string | null;
 }
 
+export interface SelectedPokemon {
+  id: number;
+  name: string;
+  image: string;
+  type?: string;
+  backgroundColor?: string;
+}
+
 export interface PokemonState {
   items: PokemonListItem[];
-  selectedPokemon: any;
+  selectedPokemon: SelectedPokemon | null;
   offset: number;
   hasMore: boolean;
 }

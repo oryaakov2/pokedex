@@ -6,6 +6,8 @@ import { SCREEN_WIDTH } from "../../constants/constants";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
+import { useDispatch } from "react-redux";
+import { setSelectedPokemon } from "../../store/slices/pokemonSlice";
 
 interface CardProps {
   id: number;
@@ -18,6 +20,7 @@ const cardWidth = (SCREEN_WIDTH - 60) / 2;
 const Card: React.FC<CardProps> = ({ id, name, image }) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const dispatch = useDispatch();
   const pokemonType = usePokemonType(name);
 
   const backgroundColor = useMemo(() => {
@@ -29,6 +32,7 @@ const Card: React.FC<CardProps> = ({ id, name, image }) => {
   }, [id]);
 
   const onPressHandler = () => {
+    dispatch(setSelectedPokemon({ id, name, image, type: pokemonType, backgroundColor }));
     navigation.push('Details', { pokemonId: id });
   }
 
