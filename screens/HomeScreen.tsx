@@ -8,9 +8,14 @@ import { useGetPokemonListQuery } from "../store/pokemonApi";
 import { PAGE_SIZE } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { appendFromApi, replaceFromApi, setOffset, selectPokemonItems, selectPokemonOffset, selectPokemonHasMore } from "../store/slices/pokemonSlice";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/navigation";
+import { useNavigation } from "@react-navigation/native";
+import { AppDispatch } from "../store/store";
 
 const HomeScreen = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const offset = useSelector(selectPokemonOffset);
   const hasMore = useSelector(selectPokemonHasMore);
   const pokemonList = useSelector(selectPokemonItems);
@@ -32,6 +37,10 @@ const HomeScreen = () => {
       dispatch(setOffset(offset + PAGE_SIZE));
     }
   }, [dispatch, isFetching, hasMore, offset]);
+
+  const handlePressItem = useCallback((pokemonId: number) => {
+    navigation.navigate('Details', { pokemonId });
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.mainContainer}>

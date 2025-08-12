@@ -1,8 +1,11 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, TYPE_COLORS } from "../../constants/colors";
 import { usePokemonType } from "../../hooks/usePokemonType";
 import { SCREEN_WIDTH } from "../../constants/constants";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/navigation";
 
 interface CardProps {
   id: number;
@@ -14,6 +17,7 @@ const cardWidth = (SCREEN_WIDTH - 60) / 2;
 
 const Card: React.FC<CardProps> = ({ id, name, image }) => {
 
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const pokemonType = usePokemonType(name);
 
   const backgroundColor = useMemo(() => {
@@ -24,11 +28,15 @@ const Card: React.FC<CardProps> = ({ id, name, image }) => {
     return `${id.toString().padStart(3, '0')}`;
   }, [id]);
 
+  const onPressHandler = () => {
+    navigation.push('Details', { pokemonId: id });
+  }
+
   return (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: backgroundColor }]}
       activeOpacity={0.8}
-      onPress={() => console.log('press')}
+      onPress={onPressHandler}
     >
       <Image source={{ uri: image }} style={styles.image} />
       <Text style={styles.name}>{name}</Text>
@@ -81,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card;
+export default memo(Card);

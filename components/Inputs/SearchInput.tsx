@@ -1,10 +1,9 @@
 import { StyleSheet, TextInput } from "react-native";
 import { COLORS } from "../../constants/colors";
+import { memo } from "react";
 
 const SearchInput = () => {
-
   
-
   return (
     <TextInput
       style={styles.input}
@@ -25,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchInput;
+export default memo(SearchInput);

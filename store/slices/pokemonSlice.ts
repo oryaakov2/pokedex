@@ -1,31 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { pokemonReducers } from '../reducers/pokemonReducer';
 import type { RootState } from '../store';
-
-export interface PokemonListItem {
-  id: number;
-  name: string;
-  image: string;
-}
-
-export interface PokemonApiListResultItem {
-  name: string;
-  url: string;
-}
-
-export interface PokemonApiListResponseLike {
-  results: PokemonApiListResultItem[];
-  next: string | null;
-}
-
-export interface PokemonState {
-  items: PokemonListItem[];
-  offset: number;
-  hasMore: boolean;
-}
+import { PokemonState } from './types';
 
 const initialState: PokemonState = {
   items: [],
+  selectedPokemon: {},
   offset: 0,
   hasMore: true,
 };
