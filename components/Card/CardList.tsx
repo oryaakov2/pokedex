@@ -2,8 +2,6 @@ import { FC, useMemo } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text } from "react-native";
 import Card from "./Card";
 import { COLORS } from "../../constants/colors";
-import { selectPokemonItems } from "../../store/slices/pokemonSlice";
-import { useSelector } from "react-redux";
 
 interface CardListProps {
   data: Array<{
@@ -16,8 +14,6 @@ interface CardListProps {
 }
 
 const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => {
-
-  const pokemonList = useSelector(selectPokemonItems);
   
   const renderItem = useMemo(() => ({ item }: {
     item: { id: number; name: string; image: string }
@@ -27,7 +23,7 @@ const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => 
   
   return (
     <FlatList
-      data={pokemonList}
+      data={data}
       showsVerticalScrollIndicator={false}
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
