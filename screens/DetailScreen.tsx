@@ -2,25 +2,31 @@ import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, SafeAreaVi
 import React, { useMemo, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
-import { useGetPokemonByNameQuery, useGetPokemonSpeciesQuery } from "../store/pokemonApi";
+import { useGetPokemonByNameQuery, useGetPokemonSpeciesQuery, useGetTypeQuery } from "../store/pokemonApi";
 import { TYPE_COLORS, COLORS } from "../constants/colors";
 import { POKEMON_IMAGE_URL } from "../constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Tabs, { TabName } from "../components/Tabs/Tabs";
 import { useSelector } from "react-redux";
 import { selectSelectedPokemon } from "../store/slices/pokemonSlice";
+import FormsTab from "../components/Tabs/FormsTab";
+import DetailTab from "../components/Tabs/DetailTab";
+import TypesTab from "../components/Tabs/TypesTab";
+import StatsTab from "../components/Tabs/StatsTab";
+import WeakTab from "../components/Tabs/WeakTab";
 
 const DetailScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Details'>>();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { pokemonId } = route.params;
 
-  const saved = useSelector(selectSelectedPokemon);
+  const [activeFormId, setActiveFormId] = useState<number>(pokemonId);
+  const selectedPokemon = useSelector(selectSelectedPokemon);
 
-  const { data: pokemon } = useGetPokemonByNameQuery(String(pokemonId));
-  const { data: species } = useGetPokemonSpeciesQuery(pokemonId);
+  const { data: pokemon } = useGetPokemonByNameQuery(String(activeFormId));
+  const { data: species } = useGetPokemonSpeciesQuery(activeFormId);
 
-  const pokemonImage = useMemo(() => `${POKEMON_IMAGE_URL}/${pokemonId}.png`, [pokemonId]);
+  const pokemonImage = useMemo(() => `${POKEMON_IMAGE_URL}/${activeFormId}.png`, [activeFormId]);
 
   const description = useMemo(() => {
     const entry = species?.flavor_text_entries?.find((e: any) => e?.language?.name === 'en');
@@ -28,8 +34,6 @@ const DetailScreen = () => {
   }, [species]);
 
   const [activeTab, setActiveTab] = useState<TabName>("Forms");
-
-  const heroBg = saved?.backgroundColor || TYPE_COLORS['normal'];
 
   const formOptions = useMemo(() => {
     const varieties: Array<{ is_default: boolean; pokemon: { name: string; url: string } }> | undefined = species?.varieties;
@@ -46,6 +50,26 @@ const DetailScreen = () => {
     });
   }, [species]);
 
+  const typeNames: string[] = useMemo(() => (pokemon?.types || []).map((t: any) => t?.type?.name).filter(Boolean), [pokemon]);
+  const stats: Array<{ label: string; value: number }> = useMemo(() => (
+    (pokemon?.stats || []).map((s: any) => ({ label: s?.stat?.name, value: s?.base_stat }))
+  ), [pokemon]);
+  const mainTypeColor = useMemo(() => {
+    const key = typeNames?.[0] as keyof typeof TYPE_COLORS | undefined;
+    return (key && TYPE_COLORS[key]) || selectedPokemon?.backgroundColor || TYPE_COLORS.normal;
+  }, [typeNames, selectedPokemon]);
+
+  const typeA = typeNames[0];
+  const typeB = typeNames[1];
+  const { data: typeAData } = useGetTypeQuery(typeA || '', { skip: !typeA });
+  const { data: typeBData } = useGetTypeQuery(typeB || '', { skip: !typeB });
+  const weakTypes: string[] = useMemo(() => {
+    const a = (typeAData?.damage_relations?.double_damage_from || []).map((t: any) => t.name);
+    const b = (typeBData?.damage_relations?.double_damage_from || []).map((t: any) => t.name);
+    const set = new Set<string>([...a, ...b]);
+    return Array.from(set);
+  }, [typeAData, typeBData]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -54,34 +78,41 @@ const DetailScreen = () => {
             <Text style={styles.backText}>{'<'}</Text>
           </TouchableOpacity>
           <View style={styles.headerTextWrap}>
-            <Text style={styles.title}>{pokemon?.name || 'Pokemon'}</Text>
-            <Text style={styles.idText}>{pokemonId}</Text>
+            <Text style={styles.title}>{selectedPokemon?.name || pokemon?.name || 'Pokemon'}</Text>
+            <Text style={styles.idText}>{activeFormId}</Text>
           </View>
+          <View style={{ width: 40 }} />
         </View>
 
-        <View style={[styles.heroCard, { backgroundColor: heroBg }]}>        
+        <View style={[styles.heroCard, { backgroundColor: mainTypeColor }]}>
           <Image source={{ uri: pokemonImage }} style={styles.heroImage} />
         </View>
 
         <Tabs activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === 'Forms' ? (
-          <View style={styles.section}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.formsRow}>
-              {formOptions.map((f) => (
-                <TouchableOpacity key={f.id} style={[styles.formThumbWrap, f.id === pokemonId && styles.formThumbActive]}>
-                  <Image source={{ uri: f.image }} style={styles.formThumb} />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+          <FormsTab
+            formOptions={formOptions}
+            activeFormId={activeFormId}
+            onSelectForm={setActiveFormId}
+            chipBgColor={selectedPokemon?.backgroundColor}
+          />
         ) : <></>}
 
         {activeTab === 'Detail' ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Description</Text>
-            <Text style={styles.sectionBody}>{description}</Text>
-          </View>
+          <DetailTab description={description} />
+        ) : <></>}
+
+        {activeTab === 'Types' ? (
+          <TypesTab typeNames={typeNames} />
+        ) : <></>}
+
+        {activeTab === 'Stats' ? (
+          <StatsTab stats={stats} barColor={mainTypeColor} />
+        ) : <></>}
+
+        {activeTab === 'Weak' ? (
+          <WeakTab weakTypes={weakTypes} />
         ) : <></>}
       </ScrollView>
     </SafeAreaView>
@@ -99,9 +130,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12
+    marginVertical: 12
   },
   backButton: {
+    width: 40,
     padding: 8,
     marginRight: 8
   },
@@ -119,7 +151,8 @@ const styles = StyleSheet.create({
     color: COLORS.DARK_BLUE
   },
   idText: {
-    fontSize: 12,
+    fontSize: 16,
+    fontWeight: '600',
     color: COLORS.DARK_GREY
   },
   heroCard: {
@@ -133,39 +166,6 @@ const styles = StyleSheet.create({
     width: '80%',
     height: '80%',
     resizeMode: 'contain'
-  },
-  section: {
-    marginTop: 12,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.DARK_BLUE,
-    marginBottom: 6,
-  },
-  sectionBody: {
-    color: COLORS.DARK_GREY,
-    lineHeight: 20,
-  },
-  formsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 8,
-  },
-  formThumbWrap: {
-    padding: 8,
-    borderRadius: 12,
-    backgroundColor: '#F1F5F9',
-    marginRight: 8,
-  },
-  formThumbActive: {
-    backgroundColor: '#E2E8F0',
-  },
-  formThumb: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
   },
 });
 
