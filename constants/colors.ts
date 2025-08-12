@@ -3,7 +3,8 @@ export const COLORS = {
   DARK_BLUE: '#18273dff',
   DARK_PURPLE: '#2C2C54',
   DARK_GREY: '#6B7280',
-  LIGHT_GREY: '#efefefff'
+  LIGHT_GREY: '#efefefff',
+  MEDIUM_GREY: '#E5E7EB',
 };
 
 export const TYPE_COLORS = {

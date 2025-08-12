@@ -31,14 +31,18 @@ const StatsTab: React.FC<StatsTabProps> = ({ stats, barColor }) => {
 };
 
 const styles = StyleSheet.create({
-  section: { marginTop: 12 },
+  section: {
+    marginTop: 12
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.DARK_BLUE,
     marginBottom: 6,
   },
-  statsWrap: { gap: 10 },
+  statsWrap: {
+    gap: 10
+  },
   statRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -53,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 10,
     borderRadius: 8,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: COLORS.MEDIUM_GREY,
     overflow: 'hidden',
   },
   statFill: {

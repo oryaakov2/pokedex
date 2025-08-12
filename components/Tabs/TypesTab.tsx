@@ -11,7 +11,12 @@ const TypesTab: React.FC<TypesTabProps> = ({ typeNames }) => {
     <View style={styles.section}>
       <View style={styles.typesRow}>
         {typeNames.map((t) => (
-          <View key={t} style={[styles.typeChip, { backgroundColor: TYPE_COLORS[t as keyof typeof TYPE_COLORS] || '#E5E7EB' }]}>
+          <View
+            key={t}
+            style={[
+              styles.typeChip,
+              { backgroundColor: TYPE_COLORS[t as keyof typeof TYPE_COLORS] || COLORS.MEDIUM_GREY }
+            ]}>
             <Text style={styles.typeChipText}>{t}</Text>
           </View>
         ))}

@@ -42,10 +42,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 12,
-    backgroundColor: '#F1F5F9'
+    backgroundColor: COLORS.LIGHT_GREY,
   },
   tabButtonActive: {
-    backgroundColor: '#E2E8F0'
+    backgroundColor: COLORS.MEDIUM_GREY,
   },
   tabText: {
     fontSize: 18,
