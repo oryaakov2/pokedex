@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   inputsContainer: {
     flexDirection: 'row',
-    gap: 10,
+    justifyContent: 'space-between',
   },
 });
 

@@ -14,6 +14,7 @@ import DetailTab from "../components/Tabs/DetailTab";
 import TypesTab from "../components/Tabs/TypesTab";
 import StatsTab from "../components/Tabs/StatsTab";
 import WeakTab from "../components/Tabs/WeakTab";
+import Icon from "react-native-vector-icons/Feather";
 
 const DetailScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Details'>>();
@@ -75,13 +76,12 @@ const DetailScreen = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Text style={styles.backText}>{'<'}</Text>
+            <Icon style={styles.backArrow} name='arrow-left' />
           </TouchableOpacity>
           <View style={styles.headerTextWrap}>
-            <Text style={styles.title}>{selectedPokemon?.name || pokemon?.name || 'Pokemon'}</Text>
-            <Text style={styles.idText}>{activeFormId}</Text>
+            <Text style={styles.title}>{selectedPokemon?.name}</Text>
+            <Text style={styles.idText}>{activeFormId.toString().padStart(3, '0')}</Text>
           </View>
-          <View style={{ width: 40 }} />
         </View>
 
         <View style={[styles.heroCard, { backgroundColor: mainTypeColor }]}>
@@ -133,25 +133,27 @@ const styles = StyleSheet.create({
     marginVertical: 12
   },
   backButton: {
-    width: 40,
+    position: 'absolute',
     padding: 8,
     marginRight: 8
   },
-  backText: {
-    fontSize: 18,
+  backArrow: {
+    fontSize: 30,
     color: COLORS.DARK_BLUE
   },
   headerTextWrap: {
     flexDirection: 'column',
-    flex: 1, alignItems: 'center'
+    flex: 1, 
+    alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
+    textTransform: 'capitalize',
     fontWeight: 'bold',
     color: COLORS.DARK_BLUE
   },
   idText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: COLORS.DARK_GREY
   },

@@ -14,13 +14,13 @@ interface CardListProps {
 }
 
 const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => {
-  
+
   const renderItem = useMemo(() => ({ item }: {
     item: { id: number; name: string; image: string }
   }) => {
     return <Card {...item} />
   }, [data.length]);
-  
+
   return (
     <FlatList
       data={data}
