@@ -16,7 +16,14 @@ export const pokemonSlice = createSlice({
   reducers: pokemonReducers,
 });
 
-export const { setOffset, replaceFromApi, appendFromApi, reset, setSelectedPokemon, clearSelectedPokemon } = pokemonSlice.actions;
+export const {
+  setOffset,
+  replaceFromApi,
+  appendFromApi,
+  reset,
+  setSelectedPokemon,
+  clearSelectedPokemon
+} = pokemonSlice.actions;
 
 export default pokemonSlice.reducer;
 
