@@ -1,5 +1,5 @@
-import { FC, useMemo } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, Text } from "react-native";
+import { FC, useCallback } from "react";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import Card from "./Card";
 import { COLORS } from "../../constants/colors";
 
@@ -15,11 +15,11 @@ interface CardListProps {
 
 const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => {
 
-  const renderItem = useMemo(() => ({ item }: {
+  const renderItem = useCallback(({ item }: {
     item: { id: number; name: string; image: string }
   }) => {
-    return <Card {...item} />
-  }, [data.length]);
+    return <Card {...item} />;
+  }, []);
 
   return (
     <FlatList
@@ -28,6 +28,7 @@ const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => 
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
       contentContainerStyle={styles.listContainer}
+      maxToRenderPerBatch={20}
       columnWrapperStyle={styles.row}
       renderItem={renderItem}
       onEndReached={onEndReached}

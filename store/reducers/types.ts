@@ -10,7 +10,7 @@ export interface PokemonApiListResultItem {
 }
 
 export interface PokemonApiListResponseLike {
-  results: PokemonApiListResultItem[];
+  results: PokemonListItem[];
   next: string | null;
 }
 

@@ -22,6 +22,7 @@ import {
 } from "../store/slices/searchSlice";
 import { AppDispatch } from "../store/store";
 import { useDebounce } from "../hooks/useDebounce";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,47 +33,45 @@ const HomeScreen = () => {
   const isSearching = useSelector(selectIsSearching);
   const searchQuery = useSelector(selectSearchQuery);
 
+  const {isConnected} = useNetInfo();
+
   const debouncedSearchQuery = useDebounce(searchQuery);
 
   const shouldSearchAPI = useMemo(() => {
     if (!debouncedSearchQuery.trim()) return false;
-    
     const query = debouncedSearchQuery.trim().toLowerCase();
     const isNumeric = /^\d+$/.test(query);
-    
     if (isNumeric) return true;
-    
-    const localMatch = pokemonList.some(pokemon => 
+    const localMatch = pokemonList.some(pokemon =>
       pokemon.name.toLowerCase().includes(query)
     );
-    
     return !localMatch;
   }, [debouncedSearchQuery, pokemonList]);
 
   useGetPokemonByNameQuery(
     debouncedSearchQuery.trim().toLowerCase(),
-    { 
+    {
       skip: !shouldSearchAPI || !debouncedSearchQuery.trim()
     }
   );
 
-  const { data, error, isLoading, isFetching } = useGetPokemonListQuery({ 
-    offset, 
-    limit: PAGE_SIZE 
-  });
+  const { data, error, isLoading, isFetching } = useGetPokemonListQuery({
+    offset,
+    limit: PAGE_SIZE
+  }, { skip: !isConnected });
 
   useEffect(() => {
     if (!data?.results) return;
-
     if (offset === 0) {
       dispatch(replaceFromApi({ results: data.results, next: data.next }));
-    } else {
+    }
+    else {
       dispatch(appendFromApi({ results: data.results, next: data.next }));
     }
   }, [data, offset, dispatch]);
 
   const handleEndReached = useCallback(() => {
-    if (!isFetching && hasMore && !isSearching) {
+    if (isConnected && !isFetching && hasMore && !isSearching) {
       dispatch(setOffset(offset + PAGE_SIZE));
     }
   }, [dispatch, isFetching, hasMore, offset, isSearching]);
