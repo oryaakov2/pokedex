@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { pokemonReducers } from '../reducers/pokemonReducer';
 import type { RootState } from '../store';
-import { PokemonState } from './types';
+import { PokemonState } from '../reducers/types';
 
 const initialState: PokemonState = {
   items: [],

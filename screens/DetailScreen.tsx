@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, SafeAreaVi
 import React, { useMemo, useState } from "react";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
-import { useGetPokemonByNameQuery, useGetPokemonSpeciesQuery, useGetTypeQuery } from "../store/pokemonApi";
+import { useGetPokemonByNameQuery, useGetPokemonSpeciesQuery, useGetTypeQuery } from "../store/api/pokemonApi";
 import { TYPE_COLORS, COLORS } from "../constants/colors";
 import { POKEMON_IMAGE_URL } from "../constants/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

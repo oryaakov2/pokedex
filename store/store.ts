@@ -1,11 +1,13 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { pokemonApi } from './pokemonApi';
+import { pokemonApi } from './api/pokemonApi';
 import pokemonReducer from './slices/pokemonSlice';
+import searchReducer from './slices/searchSlice';
 
 const rootReducer = combineReducers({
   pokemon: pokemonReducer,
+  search: searchReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
 });
 

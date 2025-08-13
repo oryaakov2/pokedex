@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { POKEMON_IMAGE_URL } from '../../constants/constants';
-import { PokemonApiListResponseLike, PokemonState } from '../slices/types';
+import { PokemonApiListResponseLike, PokemonState } from './types';
 
 const mapApiItemsToListItems = (apiItems: { name: string; url: string }[]) => {
   return apiItems.map((item) => {

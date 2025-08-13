@@ -1,4 +1,4 @@
-import { useGetPokemonByNameQuery } from "../store/pokemonApi";
+import { useGetPokemonByNameQuery } from "../store/api/pokemonApi";
 
 export const usePokemonType = (name: string) => {
   const { data } = useGetPokemonByNameQuery(name);

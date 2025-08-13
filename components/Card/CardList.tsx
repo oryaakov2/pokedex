@@ -32,7 +32,6 @@ const CardList: FC<CardListProps> = ({ data, onEndReached, isFetchingMore }) => 
       renderItem={renderItem}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
-      ListEmptyComponent={() => <Text style={styles.noResultsText}>No results found</Text>}
       ListFooterComponent={isFetchingMore ? <ActivityIndicator size="small" color={COLORS.DARK_PURPLE} /> : null}
     />
   );
